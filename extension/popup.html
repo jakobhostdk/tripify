@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Tripify · Add to plan</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header>
+      <div class="brand">
+        <svg class="logo" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="3" fill="currentColor" />
+          <circle
+            cx="12"
+            cy="12"
+            r="9"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.4"
+            opacity="0.55"
+          />
+          <circle
+            cx="12"
+            cy="12"
+            r="6"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="0.7"
+            stroke-dasharray="2 3"
+            opacity="0.35"
+          />
+        </svg>
+        <span class="wordmark">Tripify</span>
+      </div>
+      <span class="eyebrow">add to plan</span>
+    </header>
+
+    <section id="loading" class="state">
+      <p>Looking around the table…</p>
+    </section>
+
+    <section id="signed-out" class="state" hidden>
+      <p>You're not signed into Tripify in this browser.</p>
+      <a id="open-tripify" href="#" target="_blank" rel="noopener">
+        Open Tripify to sign in →
+      </a>
+    </section>
+
+    <form id="proposal-form" hidden>
+      <div id="airbnb-banner" class="detected" hidden>
+        <div class="detected-head">
+          <span class="detected-dot" aria-hidden="true"></span>
+          <span class="detected-label">Airbnb stay detected</span>
+        </div>
+        <div id="airbnb-detail" class="detected-detail"></div>
+      </div>
+
+      <label>
+        <span class="eyebrow">Trip</span>
+        <select id="tripId" required></select>
+      </label>
+
+      <label>
+        <span class="eyebrow">Kind</span>
+        <select id="kind" required>
+          <option value="destination">Place</option>
+          <option value="accommodation">Logi</option>
+          <option value="restaurant">Restaurant</option>
+          <option value="activity">Activity</option>
+          <option value="date_range">Date range</option>
+          <option value="other">Other</option>
+        </select>
+      </label>
+
+      <label>
+        <span class="eyebrow">What is it</span>
+        <input
+          id="title"
+          type="text"
+          maxlength="140"
+          required
+          autocomplete="off"
+          spellcheck="false"
+        />
+      </label>
+
+      <label>
+        <span class="eyebrow">Link</span>
+        <input id="url" type="url" readonly />
+      </label>
+
+      <label>
+        <span class="eyebrow">Why (optional)</span>
+        <textarea id="notes" rows="2" maxlength="1000"></textarea>
+      </label>
+
+      <button type="submit" id="submit-btn">Put it on the table</button>
+    </form>
+
+    <section id="success" class="state success" hidden>
+      <p>
+        <span class="check" aria-hidden="true">✓</span>
+        <span id="success-message"></span>
+      </p>
+      <p id="fit-message" class="fit-line" hidden></p>
+      <a id="success-link" href="#" target="_blank" rel="noopener">
+        View on the table →
+      </a>
+      <button id="success-again" type="button" class="secondary">
+        Add another
+      </button>
+    </section>
+
+    <section id="error" class="state error" hidden>
+      <p>
+        <span class="warn" aria-hidden="true">⚠</span>
+        <span id="error-message"></span>
+      </p>
+      <button id="error-retry" type="button" class="secondary">
+        Try again
+      </button>
+    </section>
+
+    <footer>
+      <span class="eyebrow">
+        connected to <span id="api-host">localhost:3000</span>
+      </span>
+    </footer>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

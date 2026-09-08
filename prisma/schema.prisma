@@ -1,0 +1,99 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id           String        @id
+  username     String        @unique
+  email        String?       @unique
+  passwordHash String
+  signupIp     String
+  createdAt    DateTime      @default(now())
+  participants Participant[]
+  sessions     Session[]
+
+  @@index([signupIp, createdAt])
+}
+
+model Session {
+  token     String   @id
+  userId    String
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Trip {
+  id                 String        @id
+  name               String
+  createdAt          DateTime      @default(now())
+  destinationData    String?       // JSON: AI-extracted destination metadata
+  mapImageFetchedAt  DateTime?     // timestamp the cached PNG was last written
+  targetStartDate    DateTime?     // when the group is aiming to leave
+  targetEndDate      DateTime?     // when the group is aiming to be back
+  participants       Participant[]
+  proposals          Proposal[]
+  budgetItems        BudgetItem[]
+}
+
+/// A line in the trip's budget plan — an *estimate* with a low/high range.
+/// This is planning, not actuals: no payer, no transaction date.
+model BudgetItem {
+  id          String   @id
+  tripId      String
+  category    String   // flights | lodging | food | activities | other
+  description String
+  lowCents    Int
+  highCents   Int
+  currency    String   @default("EUR")
+  createdAt   DateTime @default(now())
+  trip        Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+  @@index([tripId])
+}
+
+model Participant {
+  id          String     @id
+  tripId      String
+  userId      String?
+  displayName String
+  joinedAt    DateTime   @default(now())
+  trip        Trip       @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  user        User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
+  proposals   Proposal[] @relation("ProposalAuthor")
+  votes       Vote[]
+
+  @@index([tripId])
+  @@index([userId])
+}
+
+model Proposal {
+  id        String   @id
+  tripId    String
+  kind      String
+  payload   String
+  createdBy String
+  createdAt DateTime @default(now())
+  trip      Trip        @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  author    Participant @relation("ProposalAuthor", fields: [createdBy], references: [id])
+  votes     Vote[]
+
+  @@index([tripId])
+}
+
+model Vote {
+  proposalId    String
+  participantId String
+  value         Int
+  votedAt       DateTime    @default(now())
+  proposal      Proposal    @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  participant   Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  @@id([proposalId, participantId])
+}

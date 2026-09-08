@@ -1,0 +1,235 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f8f1df;
+  --foreground: #1d1410;
+
+  /* Editorial cartography palette — light mode (vintage parchment) */
+  --map-paper: #f5ecd3;
+  --map-paper-deep: #ead9b4;
+  --map-paper-edge: #d4be8b;
+  --map-ink: #3b2a1a;
+  --map-ink-soft: rgba(59, 42, 26, 0.22);
+  --map-ink-faint: rgba(59, 42, 26, 0.09);
+  --map-ink-whisper: rgba(59, 42, 26, 0.045);
+  --map-accent: #8c2d1f;       /* oxblood pin */
+  --map-accent-glow: rgba(140, 45, 31, 0.45);
+  --map-gold: #b48529;
+  --map-gold-soft: rgba(180, 133, 41, 0.5);
+  --map-route: rgba(140, 45, 31, 0.42);
+  --map-plane: #8c2d1f;
+  --map-sea-tint: rgba(120, 90, 55, 0.04);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-fraunces);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #060a18;
+    --foreground: #e8e2d3;
+
+    /* Editorial cartography palette — dark mode (midnight chart) */
+    --map-paper: #0a1326;
+    --map-paper-deep: #050a18;
+    --map-paper-edge: #1a2640;
+    --map-ink: #d6c08a;
+    --map-ink-soft: rgba(214, 192, 138, 0.20);
+    --map-ink-faint: rgba(214, 192, 138, 0.085);
+    --map-ink-whisper: rgba(214, 192, 138, 0.045);
+    --map-accent: #f0b350;
+    --map-accent-glow: rgba(240, 179, 80, 0.55);
+    --map-gold: #ffd584;
+    --map-gold-soft: rgba(255, 213, 132, 0.55);
+    --map-route: rgba(240, 179, 80, 0.45);
+    --map-plane: #ffd584;
+    --map-sea-tint: rgba(140, 120, 80, 0.05);
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-feature-settings: "ss01", "cv11";
+}
+
+/* Display headings — Fraunces variable serif with editorial settings */
+.font-display {
+  font-family: var(--font-fraunces), ui-serif, Georgia, serif;
+  font-optical-sizing: auto;
+  font-variation-settings: "opsz" 144, "SOFT" 50;
+  letter-spacing: -0.02em;
+}
+
+/* Glass card — readable atmosphere over the map */
+.glass-card {
+  position: relative;
+  border-radius: 1.25rem;
+  background: color-mix(in oklab, var(--map-paper) 78%, transparent);
+  border: 1px solid color-mix(in oklab, var(--map-ink) 14%, transparent);
+  box-shadow:
+    0 1px 0 0 color-mix(in oklab, white 30%, transparent) inset,
+    0 30px 80px -30px color-mix(in oklab, var(--map-ink) 35%, transparent),
+    0 10px 30px -10px color-mix(in oklab, var(--map-ink) 25%, transparent);
+  backdrop-filter: blur(14px) saturate(115%);
+  -webkit-backdrop-filter: blur(14px) saturate(115%);
+}
+
+.glass-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, white 6%, transparent) 0%,
+    transparent 30%,
+    color-mix(in oklab, var(--map-ink) 4%, transparent) 100%
+  );
+}
+
+@media (prefers-color-scheme: dark) {
+  .glass-card {
+    background: color-mix(in oklab, var(--map-paper) 68%, transparent);
+    border-color: color-mix(in oklab, var(--map-ink) 22%, transparent);
+    box-shadow:
+      0 1px 0 0 color-mix(in oklab, var(--map-ink) 10%, transparent) inset,
+      0 30px 80px -30px rgba(0, 0, 0, 0.7),
+      0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* Tiny cap-label utility for "lat / lon" style copy */
+.eyebrow {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--map-ink) 60%, transparent);
+}
+
+/* Hand-drawn-looking underline for inline links */
+.link-underline {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 100% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  padding-bottom: 2px;
+}
+
+/* --- Map background animations --- */
+
+@keyframes landmark-pulse {
+  0%, 100% {
+    opacity: 0.85;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+}
+
+@keyframes landmark-halo {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.7);
+  }
+}
+
+@keyframes landmark-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.15; }
+  35%, 65% { opacity: 0.85; }
+}
+
+@keyframes dash-flow {
+  to { stroke-dashoffset: -60; }
+}
+
+@keyframes map-breathe {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-3px, 2px) scale(1.005); }
+}
+
+@keyframes compass-rotate {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes meridian-glow {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 0.9; }
+}
+
+@keyframes animal-drift {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(4px); }
+}
+
+@keyframes hero-reveal {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+    filter: blur(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+.reveal {
+  animation: hero-reveal 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* Lodging constellation — dot halo + curve draw-in + frame reveal */
+
+@keyframes constellation-halo {
+  0%, 100% { opacity: 0.25; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.25); }
+}
+
+@keyframes constellation-draw {
+  from { stroke-dashoffset: 1200; opacity: 0; }
+  to { stroke-dashoffset: 0; opacity: 0.85; }
+}
+
+@keyframes constellation-frame-in {
+  from {
+    opacity: 0;
+    transform: translate(12px, -50%);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, -50%);
+    filter: blur(0);
+  }
+}
+
+/* Tasteful reduced-motion: keep static landmarks visible, kill the wandering */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

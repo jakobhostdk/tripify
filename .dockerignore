@@ -1,0 +1,18 @@
+node_modules
+.next
+# extension/ is intentionally NOT ignored — scripts/build-extension-zip.mjs
+# packages it into public/tripify-extension.zip during the build.
+.git
+.gitignore
+.env
+.env.*
+.DS_Store
+.claude
+*.log
+README.md
+CLAUDE.md
+AGENTS.md
+prisma/dev.db
+prisma/dev.db-journal
+Dockerfile
+.dockerignore
